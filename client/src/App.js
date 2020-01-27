@@ -1,7 +1,7 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
-import CreateProperty from './components/CreateProperty'
+import MyApp from './components/MyApp'
 
 class App extends React.Component {
   state = { loading: true, drizzleState: null };
@@ -29,7 +29,7 @@ class App extends React.Component {
   render() {
     if (this.state.loading) return "Loading Drizzle...";
     return <div className="App">
-      <CreateProperty 
+      <MyApp 
       drizzle={this.props.drizzle}
       drizzleState={this.state.drizzleState}
       />

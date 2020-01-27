@@ -3,6 +3,7 @@ import Property from "../contracts/Property.json";
 // import DisplayValue from "./DisplayValue";
 import { newContextComponents } from "@drizzle/react-components";
 import { drizzleReducers } from "@drizzle/store";
+import PropertiesList from './PropertiesList'
 const { AccountData, ContractData, ContractForm } = newContextComponents;
 
 export default class CreateProperty extends React.Component {
@@ -115,6 +116,11 @@ render() {
                     return <li key={item}>{item}</li>;
                     })}
                 </ul> 
+            //     <PropertiesList 
+            //     drizzle={this.props.drizzle}
+            //     drizzleState={this.props.drizzleState}
+            //     deployedProperties={storedData.value}
+            // />
                 : null
             }
             <div className="section">
@@ -122,6 +128,7 @@ render() {
                 <AccountData accountIndex={0} units="ether" precision={3} drizzle={drizzle} drizzleState={drizzleState}/>
             </div>
             <button onClick={this.getOwner}>getOwner</button>
+           
             {/* <div className="section">
                 <h2>PropertyFactory</h2>
                 <p>
