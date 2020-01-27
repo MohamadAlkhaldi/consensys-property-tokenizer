@@ -5,18 +5,44 @@ import React from "react";
 // const { AccountData, ContractData, ContractForm } = newContextComponents;
 
 export default class Property extends React.Component {
-//   state = { propertyContractName: null,};
+  state = { ownerKey : null,
+            holdersKey : null,
+            holdersSellingKey : null, 
+            holdersRevenueKey : null,
+            propertyRevenueKey : null,
+            propertyInfoKey : null
+        };
 
   componentDidMount= async () => {
     const { drizzle, drizzleState, propertyContractName } = this.props;
-    // const contract = drizzle.contracts.PropertyFactory;
     // const getPropertiesKey = contract.methods["getProperties"].cacheCall();
     // this.setState({ getPropertiesKey: this.props.getPropertiesKey });
     // console.log(this.props.deployedProperties)
-    console.log(this.props.propertyContractName)
-    console.log(drizzle.contracts[propertyContractName])
-    console.log(drizzleState.contracts[propertyContractName])
+    // console.log(this.props.propertyContractName)
+    // console.log(drizzle.contracts[propertyContractName])
+    
+    const contract = drizzle.contracts[propertyContractName];
+    // console.log()
+    // return
+    
+    // console.log(drizzle.contracts[propertyContractName].methods)
+    
+    const ownerKey = contract.methods["owner"].cacheCall();
+    const holdersKey = contract.methods["getHolders"].cacheCall();
+    // const holdersSellingKey = contract.methods["holdersSelling"].cacheCall();
+    // const holdersRevenueKey = contract.methods["holdersRevenue"].cacheCall();
+    const propertyRevenueKey = contract.methods["propertyRevenue"].cacheCall();
+    // const propertyInfoKey = contract.methods["propertyInfo"].cacheCall();
+    // console.log(ownerKey)
 
+    this.setState({
+        ownerKey,
+        holdersKey,
+        // holdersSellingKey, 
+        // holdersRevenueKey,
+        propertyRevenueKey,
+        // propertyInfoKey
+    })
     
     // setTimeout(() => {
     //     console.log(this.props.drizzleState.contracts.PropertyFactory.getProperties[this.props.getPropertiesKey])
@@ -30,52 +56,34 @@ export default class Property extends React.Component {
 
 
 render() {
-    // const { drizzle } = this.props;
+    const { drizzleState } = this.props;
     // let propertiesContracts = drizzle.contracts
-    // let storedData = drizzleState.contracts.PropertyFactory.getProperties[this.state.getPropertiesKey]
+    let { ownerKey,
+        holdersKey,
+        // holdersSellingKey, 
+        // holdersRevenueKey,
+        propertyRevenueKey,
+        propertyInfoKey
+    } = this.state
+    let owner = drizzleState.contracts[this.props.propertyContractName].owner[this.state.ownerKey]
+    let holders = drizzleState.contracts[this.props.propertyContractName].getHolders[this.state.holdersKey]
+    // let holdersSelling = drizzleState.contracts[this.props.propertyContractName][holdersSellingKey]
+    // let holdersRevenue = drizzleState.contracts[this.props.propertyContractName][holdersRevenueKey]
+    let propertyRevenue = drizzleState.contracts[this.props.propertyContractName].propertyRevenue[propertyRevenueKey]
+    // let propertyInfo = drizzleState.contracts[this.props.propertyContractName][propertyInfoKey]
+    // console.log(holders)
     return (
         <div>
-            {this.props.propertyContractName}
-            {/* {
+            <p>{ owner ? owner.value : null}</p>
+            <p>{ holders ? holders.value : null }</p>
+            {/* <p>{ holdersSelling }</p>
+            <p>{ holdersRevenue }</p> */}
+            <p>{ propertyRevenue ? propertyRevenue.value : null }</p>
+            {/* <p>{ propertyInfo ? propertyInfo.value : null }</p> */}
+            <p>------------------------------------------------------</p>
+            
 
-            Object.keys(propertiesContracts).map(function(key, index) {
-                if(index > 0){
-                return <p>{key},{index-1}</p>
-                }
-            }) */}
-
-            {/* } */}
-            {/* <div>{this.getTxStatus()}</div> */}
-            {/* <button onClick={() => this.createNewContractUsingFactory()}>Add property</button> */}
-
-            {/* <button onClick={() => this.getPropertiesFromState()}>Get property</button> */}
-            {/* {
-                storedData ?
-                <ul>
-                    {storedData.value.map(function(item) {
-                    return <li key={item}>{item}</li>;
-                    })}
-                </ul> 
-                : null
-            } */}
-            {/* <div className="section">
-                <h2>Active Account</h2>
-                <AccountData accountIndex={0} units="ether" precision={3} drizzle={drizzle} drizzleState={drizzleState}/>
-            </div>
-            <button onClick={this.getOwner}>getOwner</button> */}
-            {/* <div className="section">
-                <h2>PropertyFactory</h2>
-                <p>
-                    <strong>Stored Value: </strong>
-                    <ContractData contract="PropertyFactory" method="getProperties" drizzle={drizzle} drizzleState={drizzleState}/>
-                </p> */}
-                {/* <ContractForm 
-                    contract="PropertyFactory" 
-                    method="createProperty"
-                    sendArgs={{from: drizzleState.accounts[0], gasLimit: 3000000}}
-                    drizzle={drizzle} drizzleState={drizzleState}
-                 /> */}
-            {/* </div> */}
+            
         </div>
     )
   }

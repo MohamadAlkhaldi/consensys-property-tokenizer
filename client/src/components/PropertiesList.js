@@ -11,10 +11,11 @@ export default class PropertiesList extends React.Component {
   componentDidMount= async () => {
     const { drizzle } = this.props;
     // const contract = drizzle.contracts.PropertyFactory;
-    // const getPropertiesKey = contract.methods["getProperties"].cacheCall();
+    
+
     // this.setState({ getPropertiesKey: this.props.getPropertiesKey });
     // console.log(this.props.deployedProperties)
-    console.log(this.props.drizzle.contracts)
+    // console.log(this.props.drizzle.contracts)
 
     
     // setTimeout(() => {
@@ -31,16 +32,17 @@ export default class PropertiesList extends React.Component {
 render() {
     const { drizzle, drizzleState } = this.props;
     let propertiesContracts = drizzle.contracts
+    // console.log(propertiesContracts)
     // let storedData = drizzleState.contracts.PropertyFactory.getProperties[this.state.getPropertiesKey]
     return (
         <div>
             {
-
+                   
             Object.keys(propertiesContracts).map(function(key, index) {
                 if(index > 0){
-                return <Property propertyContractName={`property${index-1}`} drizzle={drizzle} drizzleState={drizzleState}/>
+                return <Property propertyContractName={key} drizzle={drizzle} drizzleState={drizzleState}/>
                 }
-            })
+            })  
 
             }
             {/* <div>{this.getTxStatus()}</div> */}
