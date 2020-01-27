@@ -11,6 +11,9 @@ import PropertyFactory from "./contracts/PropertyFactory.json";
 // let drizzle know what contracts we want and how to access our test blockchain
 const options = {
   contracts: [PropertyFactory],
+  events: {
+    PropertyFactory: ["NewPropertyAdded"],
+  },
   web3: {
     fallback: {
       type: "ws",
