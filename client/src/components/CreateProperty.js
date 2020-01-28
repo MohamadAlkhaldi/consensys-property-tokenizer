@@ -67,7 +67,7 @@ export default class CreateProperty extends React.Component {
     };
 
     addNewContractToDrizzle = (contractAddress, index) => {
-        let contractName = `property${index}`
+        let contractName = `Property ${index}`
         //This additional condition is to ensure a contract is not added twice to drizzle
             if(!this.props.drizzle.contracts[contractName]){
                 let web3Contract = new this.props.drizzle.web3.eth.Contract(Property['abi'], contractAddress)

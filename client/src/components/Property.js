@@ -16,7 +16,7 @@ export default class Property extends React.Component {
 
   componentDidMount= async () => {
     const { drizzle, drizzleState, propertyContractName } = this.props;
-    
+    console.log(propertyContractName)
     const contract = drizzle.contracts[propertyContractName];
     
     const ownerKey = contract.methods["owner"].cacheCall();
