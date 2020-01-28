@@ -39,7 +39,8 @@ render() {
             {
                    
             Object.keys(propertiesContracts).map(function(key, index) {
-                if(index > 0){
+                if(key != 'PropertyFactory'){
+                    // console.log(key)
                 return <Property propertyContractName={key} drizzle={drizzle} drizzleState={drizzleState}/>
                 }
             })  

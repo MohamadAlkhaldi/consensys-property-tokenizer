@@ -7,16 +7,16 @@ import PropertiesList from './PropertiesList'
 const { AccountData, ContractData, ContractForm } = newContextComponents;
 
 export default class CreateProperty extends React.Component {
-  state = { getPropertiesKey: null, stackId: null, newContractAddedToDrizzle: false};
+  state = { getPropertiesKey: null, stackId: null, newContractAddedToDrizzle: true};
 
   componentDidMount= async () => {
     const { drizzle } = this.props;
     const contract = drizzle.contracts.PropertyFactory;
     const getPropertiesKey = contract.methods["getProperties"].cacheCall();
+    // let activeAccount = window.web3.currentProvider.selectedAddress
     this.setState({ getPropertiesKey });
     setTimeout(() => {
         let deployedPropertiesList = this.props.drizzleState.contracts.PropertyFactory.getProperties[this.state.getPropertiesKey].value
-        // console.log(deployedPropertiesList)
         for(let i = 0; i < deployedPropertiesList.length; i++){
             this.addNewContractToDrizzle(deployedPropertiesList[i], i)
         }
@@ -54,43 +54,54 @@ getTxStatus = () => {
     // if transaction hash does not exist, don't display anything
     if (!txHash) return null;
 
+    /*here we are listening for added contracts, when check the following:
+    createNewContractUsingFactory is called state.newContractAddedToDrizzle becomes false which means new contract added but not yet added to drizzle.
+    contract in not added untill tx status is 'success'
+    then we wait untill getproperties is updated
+    then we call addNewContractToDrizzle to do just what the name impiles
+    after addNewContractToDrizzle excution state.newContractAddedToDrizzle will go false again waiting for a new contract to be added
+    */ 
+    if((transactions[txHash] && transactions[txHash].status == 'success') && !this.state.newContractAddedToDrizzle){
+        let properties = this.props.drizzleState.contracts.PropertyFactory.getProperties[this.state.getPropertiesKey].value
+        if(properties[properties.length-1]){
+            let newPropertyAddress = properties[properties.length-1]
+            console.log(newPropertyAddress, properties.length)
+            this.addNewContractToDrizzle(newPropertyAddress, properties.length)
+        }
+        // console.log(transactions[txHash].receipt.events.NewPropertyAdded)
+    }
     // otherwise, return the transaction status
-    // if(transactions[txHash] && transactions[txHash].status == 'success'){
-    //     if(transactions[txHash].receipt.events.NewPropertyAdded && !this.state.newContractAddedToDrizzle){
-    //         let properties = this.props.drizzleState.contracts.PropertyFactory.getProperties[this.state.getPropertiesKey].value
-    //         let newPropertyAddress = properties[properties.length-1]
-    //         this.addNewContractToDrizzle(newPropertyAddress, properties.length)
-    //     }
-    // // console.log(transactions[txHash].receipt.events.NewPropertyAdded)
-    // }
     return `Transaction status: ${transactions[txHash] && transactions[txHash].status}`;
   };
 
-  componentDidUpdate(prevProps, prevState) {
-    if(this.props.drizzleState.contracts.PropertyFactory.getProperties[this.state.getPropertiesKey]){
-        // console.log(prevState.newContractAddedToDrizzle != this.state.newContractAddedToDrizzle)
-        // console.log(!this.state.newContractAddedToDrizzle)
-    if(prevState.newContractAddedToDrizzle != this.state.newContractAddedToDrizzle && !this.state.newContractAddedToDrizzle){
-        let properties = this.props.drizzleState.contracts.PropertyFactory.getProperties[this.state.getPropertiesKey].value
-            let newPropertyAddress = properties[properties.length-1]
-            this.addNewContractToDrizzle(newPropertyAddress, properties.length)
-    }
-}
-  }
+//   componentDidUpdate(prevProps, prevState) {
+//     if(this.props.drizzleState.contracts.PropertyFactory.getProperties[this.state.getPropertiesKey]){
+//         // console.log(prevState.newContractAddedToDrizzle != this.state.newContractAddedToDrizzle)
+//         // console.log(!this.state.newContractAddedToDrizzle)
+//         console.log((prevState.newContractAddedToDrizzle != this.state.newContractAddedToDrizzle) && !this.state.newContractAddedToDrizzle)
+//     if((prevState.newContractAddedToDrizzle != this.state.newContractAddedToDrizzle) && !this.state.newContractAddedToDrizzle){
+//         let properties = this.props.drizzleState.contracts.PropertyFactory.getProperties[this.state.getPropertiesKey].value
+//         let newPropertyAddress = properties[properties.length-1]
+//         console.log(newPropertyAddress, properties.length)
+//         this.addNewContractToDrizzle(newPropertyAddress, properties.length)
+//     }
+// }
+//   }
 
 addNewContractToDrizzle = (contractAddress, index) => {
     let contractName = `property${index}`
-    // console.log(contractName, contractAddress)
-    let contractABI = Property['abi']
-    // console.log(Property['abi'])
-    let web3Contract = new this.props.drizzle.web3.eth.Contract(Property['abi'], contractAddress)
-                                              
-    let contractConfig = { contractName, web3Contract }
-    let events = ['ShareBought', 'HolderStatusChanged', 'RevenueDistributed', 'HolderRemoved', 'RevenueWithdrawal']
-  
-    // // Using the Drizzle context object
-    this.props.drizzle.addContract(contractConfig, events)
-    this.setState({newContractAddedToDrizzle: true})
+        if(!this.props.drizzle.contracts[contractName]){
+        let contractABI = Property['abi']
+        // console.log(Property['abi'])
+        let web3Contract = new this.props.drizzle.web3.eth.Contract(Property['abi'], contractAddress)
+                                                
+        let contractConfig = { contractName, web3Contract }
+        let events = ['ShareBought', 'HolderStatusChanged', 'RevenueDistributed', 'HolderRemoved', 'RevenueWithdrawal']
+    
+        // // Using the Drizzle context object
+        this.props.drizzle.addContract(contractConfig, events)
+        this.setState({newContractAddedToDrizzle: true})
+    }
   }
 
   getOwner = async () => {

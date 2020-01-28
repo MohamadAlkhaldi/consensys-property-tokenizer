@@ -35,7 +35,7 @@ export default class Property extends React.Component {
     const propertyRevenueKey = contract.methods["propertyRevenue"].cacheCall();
     const propertyInfoKey = contract.methods["propertyInfo"].cacheCall();
     const supplyKey = contract.methods["totalSupply"].cacheCall();
-    console.log(contract.methods)
+    // console.log(contract.methods)
 
     this.setState({
         ownerKey,
@@ -69,16 +69,17 @@ render() {
         propertyInfoKey,
         supplyKey
     } = this.state
-    let owner = drizzleState.contracts[this.props.propertyContractName].owner[this.state.ownerKey]
-    let holders = drizzleState.contracts[this.props.propertyContractName].getHolders[this.state.holdersKey]
+    let owner = drizzleState.contracts[this.props.propertyContractName] && drizzleState.contracts[this.props.propertyContractName].owner[this.state.ownerKey]
+    let holders = drizzleState.contracts[this.props.propertyContractName] && drizzleState.contracts[this.props.propertyContractName].getHolders[this.state.holdersKey]
     // let holdersSelling = drizzleState.contracts[this.props.propertyContractName][holdersSellingKey]
     // let holdersRevenue = drizzleState.contracts[this.props.propertyContractName][holdersRevenueKey]
-    let propertyRevenue = drizzleState.contracts[this.props.propertyContractName].propertyRevenue[propertyRevenueKey]
-    let propertyInfo = drizzleState.contracts[this.props.propertyContractName].propertyInfo[propertyInfoKey]
-    let supply = drizzleState.contracts[this.props.propertyContractName].totalSupply[supplyKey]
+    let propertyRevenue = drizzleState.contracts[this.props.propertyContractName] && drizzleState.contracts[this.props.propertyContractName].propertyRevenue[propertyRevenueKey]
+    let propertyInfo = drizzleState.contracts[this.props.propertyContractName] && drizzleState.contracts[this.props.propertyContractName].propertyInfo[propertyInfoKey]
+    let supply = drizzleState.contracts[this.props.propertyContractName] && drizzleState.contracts[this.props.propertyContractName].totalSupply[supplyKey]
     // console.log(propertyInfo && propertyInfo.value)
     return (
         <div>
+            <h3>{this.props.propertyContractName}</h3>
             <p>{ owner ? owner.value : null}</p>
             <p>
                 {
