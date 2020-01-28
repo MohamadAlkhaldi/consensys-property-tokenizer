@@ -16,17 +16,8 @@ export default class Property extends React.Component {
 
   componentDidMount= async () => {
     const { drizzle, drizzleState, propertyContractName } = this.props;
-    // const getPropertiesKey = contract.methods["getProperties"].cacheCall();
-    // this.setState({ getPropertiesKey: this.props.getPropertiesKey });
-    // console.log(this.props.deployedProperties)
-    // console.log(this.props.propertyContractName)
-    // console.log(drizzle.contracts[propertyContractName])
     
     const contract = drizzle.contracts[propertyContractName];
-    // console.log()
-    // return
-    
-    // console.log(drizzle.contracts[propertyContractName].methods)
     
     const ownerKey = contract.methods["owner"].cacheCall();
     const holdersKey = contract.methods["getHolders"].cacheCall();
@@ -35,7 +26,6 @@ export default class Property extends React.Component {
     const propertyRevenueKey = contract.methods["propertyRevenue"].cacheCall();
     const propertyInfoKey = contract.methods["propertyInfo"].cacheCall();
     const supplyKey = contract.methods["totalSupply"].cacheCall();
-    // console.log(contract.methods)
 
     this.setState({
         ownerKey,
@@ -46,15 +36,6 @@ export default class Property extends React.Component {
         propertyInfoKey,
         supplyKey
     })
-    
-    // setTimeout(() => {
-    //     console.log(this.props.drizzleState.contracts.PropertyFactory.getProperties[this.props.getPropertiesKey])
-    //     let deployedPropertiesList = this.props.drizzleState.contracts.PropertyFactory.getProperties[this.state.getPropertiesKey].value
-    //     // console.log(deployedPropertiesList)
-    //     for(let i = 0; i < deployedPropertiesList.length; i++){
-    //         this.addNewContractToDrizzle(deployedPropertiesList[i], i)
-    //     }
-    //  }, 2000)
 }
 
 
