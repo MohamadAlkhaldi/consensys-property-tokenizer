@@ -1,7 +1,8 @@
 import React from "react";
-import { Box, Card, Flex, Heading } from 'rimble-ui';
+import { Box, Card, Flex, Heading, Text, Table  } from 'rimble-ui';
 // import { newContextComponents } from "@drizzle/react-components";
 // const { AccountData, ContractData, ContractForm } = newContextComponents;
+import HoldersList from './HoldersList'
 
 export default class Property extends React.Component {
   state = { ownerKey : null,
@@ -39,7 +40,7 @@ export default class Property extends React.Component {
 
 
 render() {
-    const { drizzleState } = this.props;
+    const { drizzle, drizzleState, propertyContractName } = this.props;
     // let propertiesContracts = drizzle.contracts
     let { ownerKey,
         holdersKey,
@@ -63,19 +64,6 @@ render() {
                 <Card width={"auto"} maxWidth={"80%"} mx={"auto"} px={[3, 3, 4]}>
                     <h3>{this.props.propertyContractName}</h3>
                     <Heading.h5 color="#666">{ owner ? owner.value : null}</Heading.h5>
-                    <Heading.h5 color="#666">
-                        {
-                            holders ? 
-                                <ul>
-                                    {
-                                        holders.value.map((value, index) => {
-                                        return <li>{`Holder ${index}: ${value}`}</li>
-                                        })
-                                    }
-                                </ul>
-                            : null
-                        }
-                    </Heading.h5>
                     {/* <p>{ holdersSelling }</p>
                     <p>{ holdersRevenue }</p> */}
                     <Heading.h5 color="#666">{ propertyRevenue ? propertyRevenue.value : null }</Heading.h5>
@@ -86,6 +74,29 @@ render() {
                         }
                     </Heading.h5>
                     <Heading.h5 color="#666">Number of shares: { supply ? supply.value + ` for $${propertyInfo.value.price / supply.value} each` : null }</Heading.h5>
+                    <Table>
+                        <thead>
+                            <tr>
+                                <th>Holder</th>
+                                <th>Shares</th>
+                                <th>Revenue</th>
+                                <th>Selling</th>
+                                <th>buy/with</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {
+                                holders ?
+                                     <HoldersList 
+                                        holdersList={holders} 
+                                        propertyContractName={propertyContractName} 
+                                        drizzle={drizzle} drizzleState={drizzleState}
+                                     />     
+                                : null
+                            }
+                            
+                        </tbody>
+                    </Table>
                 </Card>
             {/* </Flex> */}
                 {/* <p>------------------------------------------------------</p> */}
