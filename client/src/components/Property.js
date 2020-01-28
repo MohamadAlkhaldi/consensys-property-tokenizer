@@ -1,7 +1,6 @@
 import React from "react";
-// import Property from "../contracts/Property.json";
+import { Box, Card, Flex, Heading } from 'rimble-ui';
 // import { newContextComponents } from "@drizzle/react-components";
-// import { drizzleReducers } from "@drizzle/store";
 // const { AccountData, ContractData, ContractForm } = newContextComponents;
 
 export default class Property extends React.Component {
@@ -60,32 +59,36 @@ render() {
     // console.log(propertyInfo && propertyInfo.value)
     return (
         <div>
-            <h3>{this.props.propertyContractName}</h3>
-            <p>{ owner ? owner.value : null}</p>
-            <p>
-                {
-                    holders ? 
-                        <ul>
-                            {
-                                holders.value.map((value, index) => {
-                                return <li>{`Holder ${index}: ${value}`}</li>
-                                })
-                            }
-                        </ul>
-                    : null
-                }
-            </p>
-            {/* <p>{ holdersSelling }</p>
-            <p>{ holdersRevenue }</p> */}
-            <p>{ propertyRevenue ? propertyRevenue.value : null }</p>
-            <p>{ 
-                    propertyInfo ?
-                    `Address: ${propertyInfo.value._address}, Description: ${propertyInfo.value._description}, Price: ${propertyInfo.value.price}`
-                    : null 
-                }
-            </p>
-            <p>Number of shares: { supply ? supply.value + ` for $${propertyInfo.value.price / supply.value} each` : null }</p>
-            <p>------------------------------------------------------</p>
+            {/* <Flex> */}
+                <Card width={"auto"} maxWidth={"80%"} mx={"auto"} px={[3, 3, 4]}>
+                    <h3>{this.props.propertyContractName}</h3>
+                    <Heading.h5 color="#666">{ owner ? owner.value : null}</Heading.h5>
+                    <Heading.h5 color="#666">
+                        {
+                            holders ? 
+                                <ul>
+                                    {
+                                        holders.value.map((value, index) => {
+                                        return <li>{`Holder ${index}: ${value}`}</li>
+                                        })
+                                    }
+                                </ul>
+                            : null
+                        }
+                    </Heading.h5>
+                    {/* <p>{ holdersSelling }</p>
+                    <p>{ holdersRevenue }</p> */}
+                    <Heading.h5 color="#666">{ propertyRevenue ? propertyRevenue.value : null }</Heading.h5>
+                    <Heading.h5 color="#666">{ 
+                            propertyInfo ?
+                            `Address: ${propertyInfo.value._address}, Description: ${propertyInfo.value._description}, Price: ${propertyInfo.value.price}`
+                            : null 
+                        }
+                    </Heading.h5>
+                    <Heading.h5 color="#666">Number of shares: { supply ? supply.value + ` for $${propertyInfo.value.price / supply.value} each` : null }</Heading.h5>
+                </Card>
+            {/* </Flex> */}
+                {/* <p>------------------------------------------------------</p> */}
             
 
             
