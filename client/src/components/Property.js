@@ -72,17 +72,21 @@ render() {
             {/* <Flex> */}
                 <Card width={"auto"} maxWidth={"80%"} mx={"auto"} px={[3, 3, 4]}>
                     <h3>{this.props.propertyContractName}</h3>
-                    <Heading.h5 color="#666">{ owner ? owner.value : null}</Heading.h5>
+                    {/* <Heading.h5 color="#666">{ owner ? owner.value : null}</Heading.h5> */}
                     {/* <p>{ holdersSelling }</p>
                     <p>{ holdersRevenue }</p> */}
-                    <Heading.h5 color="#666">{ propertyRevenue ? propertyRevenue.value : null }</Heading.h5>
-                    <Heading.h5 color="#666">{ 
+                    <Text>Property Revenue: { propertyRevenue ? drizzle.web3.utils.fromWei(propertyRevenue.value, 'ether') : null }</Text>
+                    <Text>{ 
                             propertyInfo ?
-                            `Address: ${propertyInfo.value._address}, Description: ${propertyInfo.value._description}, Price: ${propertyInfo.value.price}`
+                            `Address: ${propertyInfo.value._address}, 
+                            Description: ${propertyInfo.value._description}, 
+                            Price: ${drizzle.web3.utils.fromWei(propertyInfo.value.price, 'ether')}`
                             : null 
                         }
-                    </Heading.h5>
-                    <Heading.h5 color="#666">Number of shares: { supply ? supply.value + ` for $${propertyInfo.value.price / supply.value} each` : null }</Heading.h5>
+                    </Text>
+                    <Text>
+                        Number of shares: { supply ? supply.value + ` for ${drizzle.web3.utils.fromWei(`${(propertyInfo && propertyInfo.value.price) / supply.value}`, 'ether')} ETH each` : null }
+                        </Text>
                     <Table>
                         <thead>
                             <tr>

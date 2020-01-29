@@ -4,6 +4,7 @@ import Property from "../contracts/Property.json";
 import { newContextComponents } from "@drizzle/react-components";
 import { drizzleReducers } from "@drizzle/store";
 import PropertiesList from './PropertiesList'
+import { Card } from 'rimble-ui';
 const { AccountData, ContractData, ContractForm } = newContextComponents;
 
 export default class CreateProperty extends React.Component {
@@ -93,24 +94,28 @@ export default class CreateProperty extends React.Component {
         let storedData = drizzleState.contracts.PropertyFactory.getProperties[this.state.getPropertiesKey]
         return (
             <div>
-                <div>{this.getTxStatus()}</div>
-                <button onClick={() => this.createNewContractUsingFactory()}>Add property</button>
+                <br/>
+                <Card width={"auto"} maxWidth={"80%"} mx={"auto"} >
+                    <div>{this.getTxStatus()}</div>
+                    <button onClick={() => this.createNewContractUsingFactory()}>Add property</button>
 
-                <button onClick={() => this.getPropertiesFromState()}>Get property</button>
-                {
-                    storedData ?
-                    <ul>
-                        {storedData.value.map(function(item) {
-                        return <li key={item}>{item}</li>;
-                        })}
-                    </ul>
-                    : null
-                }
-                <div className="section">
-                    <h2>Active Account</h2>
-                        <h4>{this.state.activeAccount}</h4>
-                </div>
-                <button onClick={this.getOwner}>Check state</button>
+                    <button onClick={() => this.getPropertiesFromState()}>Get property</button>
+                    {
+                        storedData ?
+                        <ul>
+                            {storedData.value.map(function(item) {
+                            return <li key={item}>{item}</li>;
+                            })}
+                        </ul>
+                        : null
+                    }
+                    <div className="section">
+                        <h2>Active Account</h2>
+                            <h4>{this.state.activeAccount}</h4>
+                    </div>
+                    <button onClick={this.getOwner}>Check state</button>
+                </Card>
+                <br/>
             </div>
         )
     }
