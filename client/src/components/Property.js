@@ -1,24 +1,30 @@
 import React from "react";
-import { Box, Card, Flex, Heading, Text, Table  } from 'rimble-ui';
+import { Box, Card, Flex, Button, Text, Table  } from 'rimble-ui';
 // import { newContextComponents } from "@drizzle/react-components";
 // const { AccountData, ContractData, ContractForm } = newContextComponents;
 import HoldersList from './HoldersList'
 
 export default class Property extends React.Component {
-  state = { ownerKey : null,
-            holdersKey : null,
-            holdersSellingKey : null, 
-            holdersRevenueKey : null,
-            propertyRevenueKey : null,
-            propertyInfoKey : null,
-            supplyKey : null,
-            activeAccount : null
-        };
+    constructor (props) {
+        super(props)
+        this.state = { ownerKey : null,
+                    holdersKey : null,
+                    holdersSellingKey : null, 
+                    holdersRevenueKey : null,
+                    propertyRevenueKey : null,
+                    propertyInfoKey : null,
+                    supplyKey : null,
+                    activeAccount : null,
+                    stackId : null
+                };
+        this.handlePayRent = this.handlePayRent.bind(this)
+        this.handleDistributeRevenue = this.handleDistributeRevenue.bind(this)
+    }
 
   componentDidMount= async () => {
     const { drizzle, drizzleState, propertyContractName } = this.props;
-    // console.log(propertyContractName)
     const contract = drizzle.contracts[propertyContractName];
+    // console.log(contract.web3.eth.send)
     
     const ownerKey = contract.methods["owner"].cacheCall();
     const holdersKey = contract.methods["getHolders"].cacheCall();
@@ -47,6 +53,28 @@ export default class Property extends React.Component {
     })
 }
 
+handlePayRent = async () => {
+    const { drizzle, drizzleState, propertyContractName } = this.props;
+    
+    const contract = drizzle.contracts[propertyContractName]
+    let propertyContractAddress = contract.address
+
+    let amount = Number(prompt('Enter the amount of ETH you want to pay'))
+
+    if(amount){
+        await contract.web3.eth.sendTransaction({from: this.state.activeAccount, to: propertyContractAddress, value: drizzle.web3.utils.toWei(`${amount}`, 'ether')})
+    }
+}
+
+handleDistributeRevenue (){
+    const { drizzle, drizzleState, propertyContractName } = this.props;
+
+    const contract = drizzle.contracts[propertyContractName]
+
+    let stackId = contract.methods['distributeRevenue'].cacheSend({from: this.state.activeAccount})
+
+    this.setState({stackId})
+}
 
 render() {
     const { drizzle, drizzleState, propertyContractName } = this.props;
@@ -75,18 +103,32 @@ render() {
                     {/* <Heading.h5 color="#666">{ owner ? owner.value : null}</Heading.h5> */}
                     {/* <p>{ holdersSelling }</p>
                     <p>{ holdersRevenue }</p> */}
-                    <Text>Property Revenue: { propertyRevenue ? drizzle.web3.utils.fromWei(propertyRevenue.value, 'ether') : null }</Text>
-                    <Text>{ 
-                            propertyInfo ?
-                            `Address: ${propertyInfo.value._address}, 
-                            Description: ${propertyInfo.value._description}, 
-                            Price: ${drizzle.web3.utils.fromWei(propertyInfo.value.price, 'ether')}`
-                            : null 
-                        }
-                    </Text>
-                    <Text>
-                        Number of shares: { supply ? supply.value + ` for ${drizzle.web3.utils.fromWei(`${(propertyInfo && propertyInfo.value.price) / supply.value}`, 'ether')} ETH each` : null }
-                        </Text>
+                    <Flex>
+                        <Box width={1/2}>
+                            <Text>Property Revenue: { propertyRevenue ? `${drizzle.web3.utils.fromWei(propertyRevenue.value, 'ether')} ETH` : null }</Text>
+                            <Text>
+                                { 
+                                    propertyInfo ?
+                                    `Address: ${propertyInfo.value._address}S
+                                    Description: ${propertyInfo.value._description} 
+                                    Price: ${drizzle.web3.utils.fromWei(propertyInfo.value.price, 'ether')} ETH`
+                                    : null 
+                                }
+                            </Text>
+                            <Text>
+                                Number of shares: { supply ? supply.value + ` for ${drizzle.web3.utils.fromWei(`${(propertyInfo && propertyInfo.value.price) / supply.value}`, 'ether')} ETH each` : null }
+                            </Text>
+                        </Box>
+                        <Box width={1/4}></Box>
+                        <Box width={1/4}>
+                            <Button size='small' m='1' onClick={this.handlePayRent}>Pay Rent</Button>
+                            <Button size='small' m='1' onClick={this.handleDistributeRevenue}
+                                    disabled={this.state.activeAccount == (owner && owner.value.toLowerCase()) ? false : true}
+                            >
+                                Distribute Revenue
+                            </Button>
+                        </Box>
+                    </Flex>
                     <Table>
                         <thead>
                             <tr>

@@ -103,8 +103,9 @@ export default class Holder extends React.Component {
         
         return (
                     <tr>
-                        <td style={contractOwner == holderAddress ? {'color':'green'} : null}>
+                        <td >
                             {`${holderAddress.substring(0, 5)}...${holderAddress.substring(38, 42)}`}
+                            {contractOwner == holderAddress ? ' owner' : null}
                         </td>
                         <td>{holderSharesBalance ? holderSharesBalance.value : null}</td>
                         <td>{holdersRevenue ? `${drizzle.web3.utils.fromWei(holdersRevenue.value, 'ether')} ETH` : null}</td>
