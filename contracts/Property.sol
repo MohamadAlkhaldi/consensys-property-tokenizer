@@ -7,6 +7,8 @@ import "@openzeppelin/contracts/ownership/Ownable.sol";
 
 contract Property is ERC20, Ownable {
     using SafeMath for uint256;
+
+    bool internal paused = false;
     
     address[] public holders;
     mapping(address=>bool) public holdersSelling;
@@ -32,20 +34,26 @@ contract Property is ERC20, Ownable {
         holders.push(_owner);
         propertyRevenue = 0;
         propertyInfo = PropertyInfo(_id, _address, _description, _price);
-        // propertyInfo._address = _address;
-        // propertyInfo._description = _description;
         _mint(_owner, _supply);
     }
     
     function () external payable {
        propertyRevenue += msg.value;
     }
+
+    function circuitBreaker() public onlyOwner(){
+        if(paused){
+            paused = false;
+        } else {
+            paused = true;
+        }
+    }
    
     function getHolders() public view returns(address[] memory) {
         return holders;
     }
     
-    function buyShare(address _from, uint  _amount) public payable returns(bool){
+    function buyShare(address _from, uint  _amount) public payable checkIfPaused(){
         require(holdersSelling[_from], "The requested shareholder is not selling");
         uint holderBalance = balanceOf(_from);
         uint price = (propertyInfo.price/totalSupply())*_amount;
@@ -67,12 +75,12 @@ contract Property is ERC20, Ownable {
         emit ShareBought(_from, msg.sender, _amount);
     }
     
-    function setMySharesForSale() public returns(bool){
+    function setMySharesForSale() public{
         holdersSelling[msg.sender] = true;
         emit HolderStatusChanged(msg.sender, true);
     }
     
-    function setMySharesNotForSale() public returns(bool){
+    function setMySharesNotForSale() public{
         holdersSelling[msg.sender] = false;
         emit HolderStatusChanged(msg.sender, false);
     }
@@ -106,26 +114,9 @@ contract Property is ERC20, Ownable {
         emit RevenueWithdrawal(msg.sender, holderRevenueToWithdraw);
     }
     
+    modifier checkIfPaused(){
+        require(!paused, 'This action is paused by owner');
+        _;
+    }
 
 }
-
-// contract Property  is ERC20, Ownable {
-//     using SafeMath for uint256;
-
-//     uint public price;
-//     uint public supply;
-
-//     // constructor(uint _price, uint _supply, address _owner) public {
-//         constructor(uint _price, uint _supply, address _owner) public {
-//         // owner = _owner;
-//         price = _price;
-//         supply = _supply;
-//         _mint(_owner, _supply);
-//     }
-    
-//     function getPropertyInfo() public view returns(uint){
-//         return price;
-//         // return info;
-//     }
-
-// }

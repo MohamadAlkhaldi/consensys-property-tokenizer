@@ -1,4 +1,4 @@
-//This file is borrowed from ConsenSys Blockchain Developer Bootcamp exercises
+//This file is borrowed as is from ConsenSys Blockchain Developer Bootcamp exercises
 
 const errorString = "VM Exception while processing transaction: ";
 

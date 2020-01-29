@@ -20,13 +20,6 @@ contract("Property", accounts => {
     supply : 10
   }
 
-  // const property2 = {
-  //   address : "Property 2 address",
-  //   description : "Property 2 description",
-  //   price : etherToWei(200),
-  //   supply : 10
-  // }
-
   function etherToWei (amount) {
     return web3.utils.toWei(amount.toString(), "ether")
   }
@@ -146,10 +139,31 @@ contract("Property", accounts => {
         
         it("Should send revenue amount in to holder", async () => {
           await property1Instance.distributeRevenue({from : ownerAccount})
-          let holdersRevenue = await property1Instance.holdersRevenue(account1)
+          // let holdersRevenue = await property1Instance.holdersRevenue(account1)
           let etherBalanceBeforeWithdrawal = await web3.eth.getBalance(account1)
           await property1Instance.withdraw({from : account1})
           let etherBalanceAfterWithdrawal = await web3.eth.getBalance(account1)
+
+          assert((etherBalanceAfterWithdrawal - etherBalanceBeforeWithdrawal) > 0, etherBalanceAfterWithdrawal)
+        })
+      })
+
+      describe("circuitBreaker", async () => {
+        beforeEach(async () => {
+          await property1Instance.setMySharesForSale({from : ownerAccount});
+          await property1Instance.buyShare(ownerAccount, 2, {from: account5, value: etherToWei(20)})
+          await property1Instance.setMySharesForSale({from : account5});
+        })
+        it("Should revert if someone tries to buy when circuit is paused", async () => {
+          await property1Instance.circuitBreaker({from: ownerAccount})
+          await catchRevert(property1Instance.buyShare(account5, 2, {from: account6, value: etherToWei(20)}))
+        })
+        it("Holders should be able to withdraw revenue even when circuit is paused", async () => {
+          await property1Instance.buyShare(account5, 2, {from: account6, value: etherToWei(20)})
+          let etherBalanceBeforeWithdrawal = await web3.eth.getBalance(account5)
+          await property1Instance.circuitBreaker({from: ownerAccount})
+          await property1Instance.withdraw({from : account5})
+          let etherBalanceAfterWithdrawal = await web3.eth.getBalance(account5)
 
           assert((etherBalanceAfterWithdrawal - etherBalanceBeforeWithdrawal) > 0, etherBalanceAfterWithdrawal)
         })
