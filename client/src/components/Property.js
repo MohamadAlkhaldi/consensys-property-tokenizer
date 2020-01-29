@@ -11,12 +11,13 @@ export default class Property extends React.Component {
             holdersRevenueKey : null,
             propertyRevenueKey : null,
             propertyInfoKey : null,
-            supplyKey : null
+            supplyKey : null,
+            activeAccount : null
         };
 
   componentDidMount= async () => {
     const { drizzle, drizzleState, propertyContractName } = this.props;
-    console.log(propertyContractName)
+    // console.log(propertyContractName)
     const contract = drizzle.contracts[propertyContractName];
     
     const ownerKey = contract.methods["owner"].cacheCall();
@@ -27,6 +28,8 @@ export default class Property extends React.Component {
     const propertyInfoKey = contract.methods["propertyInfo"].cacheCall();
     const supplyKey = contract.methods["totalSupply"].cacheCall();
 
+    let activeAccount = window.web3.currentProvider.selectedAddress
+
     this.setState({
         ownerKey,
         holdersKey,
@@ -34,7 +37,13 @@ export default class Property extends React.Component {
         // holdersRevenueKey,
         propertyRevenueKey,
         propertyInfoKey,
-        supplyKey
+        supplyKey,
+        activeAccount
+    })
+
+    this.props.drizzle.web3.currentProvider.publicConfigStore.on('update', ({ selectedAddress }) => {
+        let activeAccount = selectedAddress
+        this.setState({ activeAccount});
     })
 }
 
@@ -57,7 +66,7 @@ render() {
     let propertyRevenue = drizzleState.contracts[this.props.propertyContractName] && drizzleState.contracts[this.props.propertyContractName].propertyRevenue[propertyRevenueKey]
     let propertyInfo = drizzleState.contracts[this.props.propertyContractName] && drizzleState.contracts[this.props.propertyContractName].propertyInfo[propertyInfoKey]
     let supply = drizzleState.contracts[this.props.propertyContractName] && drizzleState.contracts[this.props.propertyContractName].totalSupply[supplyKey]
-    // console.log(propertyInfo && propertyInfo.value)
+    
     return (
         <div>
             {/* <Flex> */}
@@ -81,7 +90,8 @@ render() {
                                 <th>Shares</th>
                                 <th>Revenue</th>
                                 <th>Selling</th>
-                                <th>buy/with</th>
+                                <th>Withdraw</th>
+                                <th>Buy</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -91,6 +101,7 @@ render() {
                                         holdersList={holders} 
                                         propertyContractName={propertyContractName} 
                                         drizzle={drizzle} drizzleState={drizzleState}
+                                        activeAccount={this.state.activeAccount}
                                      />     
                                 : null
                             }

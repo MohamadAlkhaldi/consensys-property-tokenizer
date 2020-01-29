@@ -4,7 +4,7 @@ import Holder from './Holder';
 export default class HoldersList extends React.Component {
 
 render() {
-    const {drizzle, drizzleState, propertyContractName} = this.props
+    const {drizzle, drizzleState, propertyContractName, activeAccount} = this.props
     return (
         this.props.holdersList.value.map((value, index) => {
             return (
@@ -13,6 +13,7 @@ render() {
                     propertyContractName={propertyContractName} 
                     drizzle={drizzle} 
                     drizzleState={drizzleState}
+                    activeAccount={activeAccount}
                 />
             )
         })

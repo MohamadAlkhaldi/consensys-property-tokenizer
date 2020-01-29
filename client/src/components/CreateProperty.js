@@ -25,6 +25,7 @@ export default class CreateProperty extends React.Component {
         //this listener is for matamask account change
         this.props.drizzle.web3.currentProvider.publicConfigStore.on('update', ({ selectedAddress }) => {
             let activeAccount = selectedAddress
+
             this.setState({ activeAccount});
         })
     }
@@ -33,7 +34,8 @@ export default class CreateProperty extends React.Component {
         const { drizzle, drizzleState } = this.props;
         const contract = drizzle.contracts.PropertyFactory;
         let propertiesLengthBefore = this.props.drizzleState.contracts.PropertyFactory.getProperties[this.state.getPropertiesKey].value.length
-        const stackId = await contract.methods["createProperty"].cacheSend('add', 'desc', 1000, 10, {from : this.state.activeAccount, gasLimit: 3000000})
+        let price = drizzle.web3.utils.toWei('10', 'ether')
+        const stackId = await contract.methods["createProperty"].cacheSend('add', 'desc', price, 10, {from : this.state.activeAccount, gasLimit: 3000000})
         this.setState({ stackId, newContractAddedToDrizzle: false });
     }
 
