@@ -17,6 +17,7 @@ export default class Holder extends React.Component {
             firstKey: null}
         this.handleToggleForSale = this.handleToggleForSale.bind(this)
         this.handleBuyButton = this.handleBuyButton.bind(this)
+        this.handleWithdrawRevenue = this.handleWithdrawRevenue.bind(this)
     }
 
     componentDidMount(){
@@ -80,6 +81,15 @@ export default class Holder extends React.Component {
 
     }
 
+    handleWithdrawRevenue(){
+        const { drizzle, drizzleState, holderAddress, propertyContractName, activeAccount } = this.props
+        const contract = drizzle.contracts[propertyContractName]
+
+        let stackId = contract.methods['withdraw'].cacheSend({from: activeAccount, gasLimit: 3000000})
+            
+        this.setState({stackId})
+    }
+
     render() {
         const {drizzleState, drizzle, propertyContractName, activeAccount} = this.props
         const contract = drizzleState.contracts[propertyContractName]
@@ -93,23 +103,40 @@ export default class Holder extends React.Component {
         
         return (
                     <tr>
-                        <td style={contractOwner == holderAddress ? {'color':'green'} : null}>{`${holderAddress.substring(0, 5)}...${holderAddress.substring(38, 42)}`}</td>
+                        <td style={contractOwner == holderAddress ? {'color':'green'} : null}>
+                            {`${holderAddress.substring(0, 5)}...${holderAddress.substring(38, 42)}`}
+                        </td>
                         <td>{holderSharesBalance ? holderSharesBalance.value : null}</td>
                         <td>{holdersRevenue ? `${drizzle.web3.utils.fromWei(holdersRevenue.value, 'ether')} ETH` : null}</td>
                         <td>
                             {holderSelling ? `${holderSelling.value}` : null}
                             {
+                                // Condition: The active account is holder?
                                 holderAddress.toLowerCase() == activeAccount ?
                                 <Button.Outline onClick={this.handleToggleForSale} size="small" mr={3} icon="Edit" icononly />
                                 : null
                             }
                         </td>
-                        <td>{holdersRevenue ? holdersRevenue.value : null}</td>
+                        <td>
+                            <Button.Outline onClick={this.handleWithdrawRevenue} size="small" mr={3}
+                            // Condition: The active account is holder? and holder renenue is not 0? don't disable, otherwise do
+                            disabled={holderAddress.toLowerCase() == activeAccount && ((holdersRevenue && holdersRevenue.value) > 0) ? false : true}
+                            >
+                                Withdraw Revenue
+                            </Button.Outline>
+                        </td>
                         <td>
                             <Button.Outline 
-                                onClick={this.handleBuyButton} size="small" mr={3} icon="Edit" icononly 
-                                disabled={holderAddress.toLowerCase() == activeAccount ? true : false}
-                            />
+                                onClick={this.handleBuyButton} size="small" mr={3} 
+                                disabled={
+                                    // Condition: The active account is holder? and holder is selling? don't disable, otherwise do
+                                    (holderAddress.toLowerCase() != activeAccount) &&  (holderSelling && holderSelling.value) ? 
+                                    false 
+                                    : true
+                                }
+                            >
+                                Buy
+                            </Button.Outline>
                         </td>
                     </tr>
                 )

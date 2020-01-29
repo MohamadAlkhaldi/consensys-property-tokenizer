@@ -90,8 +90,8 @@ render() {
                                 <th>Shares</th>
                                 <th>Revenue</th>
                                 <th>Selling</th>
-                                <th>Withdraw</th>
-                                <th>Buy</th>
+                                <th></th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
