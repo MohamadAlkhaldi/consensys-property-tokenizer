@@ -4,11 +4,19 @@ import Property from "../contracts/Property.json";
 import { newContextComponents } from "@drizzle/react-components";
 import { drizzleReducers } from "@drizzle/store";
 import PropertiesList from './PropertiesList'
-import { Card } from 'rimble-ui';
+import { Card, Heading, Text } from 'rimble-ui';
+import CreatePropertyForm from './CreatePropertyForm'
 const { AccountData, ContractData, ContractForm } = newContextComponents;
 
 export default class CreateProperty extends React.Component {
-    state = { getPropertiesKey: null, stackId: null, newContractAddedToDrizzle: true, activeAccount: null};
+    constructor(props){
+        super(props)
+        this.state = { getPropertiesKey: null, 
+            stackId: null, 
+            newContractAddedToDrizzle: true, 
+            activeAccount: null};
+        this.createNewContractUsingFactory = this.createNewContractUsingFactory.bind(this)
+    }
 
     componentDidMount= async () => {
         const { drizzle } = this.props;
@@ -32,12 +40,12 @@ export default class CreateProperty extends React.Component {
         })
     }
 
-    createNewContractUsingFactory = async () => {
+    createNewContractUsingFactory = async (_address, _description, _price, _numberOfShares) => {
         const { drizzle, drizzleState } = this.props;
         const contract = drizzle.contracts.PropertyFactory;
 
-        let price = drizzle.web3.utils.toWei('10', 'ether')
-        let tx = await contract.methods.createProperty('add', 'desc', price, 10 ).send({from : this.state.activeAccount, gasLimit: 3000000})
+        let price = drizzle.web3.utils.toWei(_price, 'ether')
+        let tx = await contract.methods.createProperty(_address, _description, price, _numberOfShares ).send({from : this.state.activeAccount, gasLimit: 3000000})
 
         let properties = drizzleState.contracts.PropertyFactory.getProperties[this.state.getPropertiesKey].value
         if(tx.status){
@@ -62,23 +70,20 @@ export default class CreateProperty extends React.Component {
         }
     }
 
-    getOwner = async () => {
-        const {drizzle , drizzleState} = this.props
-        console.log('drizzle', drizzle.contracts)
-        console.log('drizzleState', drizzleState.contracts)
-    }
+    // getOwner = async () => {
+    //     const {drizzle , drizzleState} = this.props
+    //     console.log('drizzle', drizzle.contracts)
+    //     console.log('drizzleState', drizzleState.contracts)
+    // }
 
     render() {
-        const { drizzle , drizzleState } = this.props;
-        let storedData = drizzleState.contracts.PropertyFactory.getProperties[this.state.getPropertiesKey]
+        // const { drizzle , drizzleState } = this.props;
+        // let storedData = drizzleState.contracts.PropertyFactory.getProperties[this.state.getPropertiesKey]
         return (
             <div>
                 <br/>
-                <Card width={"auto"} maxWidth={"80%"} mx={"auto"}>
-                    <button onClick={() => this.createNewContractUsingFactory()}>Add property</button>
-
-                    <button onClick={() => this.getPropertiesFromState()}>Get property</button>
-                    {
+                <Card width={"auto"} maxWidth={"80%"} mx={"auto"} bg={''}>
+                    {/* {
                         storedData ?
                         <ul>
                             {storedData.value.map(function(item) {
@@ -86,12 +91,14 @@ export default class CreateProperty extends React.Component {
                             })}
                         </ul>
                         : null
-                    }
+                    } */}
                     <div className="section">
-                        <h2>Active Account</h2>
-                            <h4>{this.state.activeAccount}</h4>
+                        {/* <h2>Active Account</h2> */}
+                            <Heading as={'h3'}>Welcome {this.state.activeAccount}!</Heading>
+                            <Text>We will help you tokenize your property</Text>
                     </div>
-                    <button onClick={this.getOwner}>Check state</button>
+                    {/* <button onClick={this.getOwner}>Check state</button> */}
+                    <CreatePropertyForm createNewContractUsingFactory={this.createNewContractUsingFactory}/>
                 </Card>
                 <br/>
             </div>

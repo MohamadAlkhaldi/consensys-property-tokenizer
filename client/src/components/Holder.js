@@ -84,9 +84,7 @@ export default class Holder extends React.Component {
     handleWithdrawRevenue(){
         const { drizzle, drizzleState, holderAddress, propertyContractName, activeAccount } = this.props
         const contract = drizzle.contracts[propertyContractName]
-
         let stackId = contract.methods['withdraw'].cacheSend({from: activeAccount, gasLimit: 3000000})
-            
         this.setState({stackId})
     }
 

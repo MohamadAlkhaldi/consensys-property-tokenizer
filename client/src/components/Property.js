@@ -1,7 +1,5 @@
 import React from "react";
-import { Box, Card, Flex, Button, Text, Table  } from 'rimble-ui';
-// import { newContextComponents } from "@drizzle/react-components";
-// const { AccountData, ContractData, ContractForm } = newContextComponents;
+import { Box, Card, Flex, Button, Text, Table, Heading  } from 'rimble-ui';
 import HoldersList from './HoldersList'
 
 export default class Property extends React.Component {
@@ -78,46 +76,40 @@ handleDistributeRevenue (){
 
 render() {
     const { drizzle, drizzleState, propertyContractName } = this.props;
-    // let propertiesContracts = drizzle.contracts
     let { ownerKey,
         holdersKey,
-        // holdersSellingKey, 
-        // holdersRevenueKey,
         propertyRevenueKey,
         propertyInfoKey,
         supplyKey
     } = this.state
-    let owner = drizzleState.contracts[this.props.propertyContractName] && drizzleState.contracts[this.props.propertyContractName].owner[this.state.ownerKey]
-    let holders = drizzleState.contracts[this.props.propertyContractName] && drizzleState.contracts[this.props.propertyContractName].getHolders[this.state.holdersKey]
-    // let holdersSelling = drizzleState.contracts[this.props.propertyContractName][holdersSellingKey]
-    // let holdersRevenue = drizzleState.contracts[this.props.propertyContractName][holdersRevenueKey]
-    let propertyRevenue = drizzleState.contracts[this.props.propertyContractName] && drizzleState.contracts[this.props.propertyContractName].propertyRevenue[propertyRevenueKey]
-    let propertyInfo = drizzleState.contracts[this.props.propertyContractName] && drizzleState.contracts[this.props.propertyContractName].propertyInfo[propertyInfoKey]
-    let supply = drizzleState.contracts[this.props.propertyContractName] && drizzleState.contracts[this.props.propertyContractName].totalSupply[supplyKey]
+
+    const contract = drizzleState.contracts[this.props.propertyContractName]
+    let owner = contract && contract.owner[ownerKey]
+    let holders = contract && contract.getHolders[holdersKey]
+    let propertyRevenue = contract && contract.propertyRevenue[propertyRevenueKey]
+    let propertyInfo = contract && contract.propertyInfo[propertyInfoKey]
+    let supply = contract && contract.totalSupply[supplyKey]
     
     return (
         <div>
             {/* <Flex> */}
                 <Card width={"auto"} maxWidth={"80%"} mx={"auto"} px={[3, 3, 4]}>
-                    <h3>{this.props.propertyContractName}</h3>
-                    {/* <Heading.h5 color="#666">{ owner ? owner.value : null}</Heading.h5> */}
-                    {/* <p>{ holdersSelling }</p>
-                    <p>{ holdersRevenue }</p> */}
+                    <Heading as={'h4'}>{this.props.propertyContractName}</Heading>
                     <Flex>
                         <Box width={1/2}>
-                            <Text>Property Revenue: { propertyRevenue ? `${drizzle.web3.utils.fromWei(propertyRevenue.value, 'ether')} ETH` : null }</Text>
+                            { 
+                                propertyInfo ?
+                                <div>
+                                <Text>Address: {propertyInfo.value._address}</Text>
+                                <Text>Description: {propertyInfo.value._description}</Text>
+                                <Text>Price: {drizzle.web3.utils.fromWei(propertyInfo.value.price, 'ether')} ETH</Text>
+                                </div>
+                                : null 
+                            }
                             <Text>
-                                { 
-                                    propertyInfo ?
-                                    `Address: ${propertyInfo.value._address}S
-                                    Description: ${propertyInfo.value._description} 
-                                    Price: ${drizzle.web3.utils.fromWei(propertyInfo.value.price, 'ether')} ETH`
-                                    : null 
-                                }
+                                Shares: { supply ? supply.value + ` for ${drizzle.web3.utils.fromWei(`${(propertyInfo && propertyInfo.value.price) / supply.value}`, 'ether')} ETH each` : null }
                             </Text>
-                            <Text>
-                                Number of shares: { supply ? supply.value + ` for ${drizzle.web3.utils.fromWei(`${(propertyInfo && propertyInfo.value.price) / supply.value}`, 'ether')} ETH each` : null }
-                            </Text>
+                                <Text>Property undistributed revenue: { propertyRevenue ? `${drizzle.web3.utils.fromWei(propertyRevenue.value, 'ether')} ETH` : null }</Text>
                         </Box>
                         <Box width={1/4}></Box>
                         <Box width={1/4}>

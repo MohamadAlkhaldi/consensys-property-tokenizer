@@ -1,9 +1,6 @@
 import React from "react";
-// import Property from "../contracts/Property.json";
-import { newContextComponents } from "@drizzle/react-components";
-import { drizzleReducers } from "@drizzle/store";
 import Property from './Property'
-const { AccountData, ContractData, ContractForm } = newContextComponents;
+import { Heading, Card } from "rimble-ui";
 
 export default class PropertiesList extends React.Component {
   state = { getPropertiesKey: null,};
@@ -13,16 +10,16 @@ render() {
     let propertiesContracts = drizzle.contracts
     return (
         <div>
-            {
-                   
-            Object.keys(propertiesContracts).map(function(key, index) {
-                if(key != 'PropertyFactory'){
-                    return <Property propertyContractName={key} drizzle={drizzle} drizzleState={drizzleState}/>
+            <Card width={"auto"} maxWidth={"80%"} mx={"auto"} px={[3, 3, 4]}>
+                <Heading as={'h3'}>Added Properties:</Heading>
+            </Card>
+                {    
+                Object.keys(propertiesContracts).map(function(key, index) {
+                    if(key != 'PropertyFactory'){
+                        return <Property propertyContractName={key} drizzle={drizzle} drizzleState={drizzleState}/>
+                    }
+                })
                 }
-            })  
-
-            }
-            
         </div>
     )
   }
