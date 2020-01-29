@@ -16,14 +16,15 @@ export default class CreateProperty extends React.Component {
         const getPropertiesKey = contract.methods["getProperties"].cacheCall();
         let activeAccount = window.web3.currentProvider.selectedAddress
         this.setState({ getPropertiesKey, activeAccount });
-        setTimeout(() => {
-            let deployedPropertiesList = this.props.drizzleState.contracts.PropertyFactory.getProperties[this.state.getPropertiesKey].value
-            for(let i = 0; i < deployedPropertiesList.length; i++){
-                this.addNewContractToDrizzle(deployedPropertiesList[i], i)
-            }
-        }, 1000)
 
-        //this listener is for matamask account change
+        //This chunk is for adding already deployed contracts into Drizzle
+        let deployedPropertiesList = await contract.methods.getProperties().call()
+        for(let i = 0; i < deployedPropertiesList.length; i++){
+            this.addNewContractToDrizzle(deployedPropertiesList[i], i)
+        }
+
+        //Here we are listening for metamask account change, typically, the active account should be exposed through drizzleState.accounts[0]
+        //but for some reason it's not working
         this.props.drizzle.web3.currentProvider.publicConfigStore.on('update', ({ selectedAddress }) => {
             let activeAccount = selectedAddress
 
@@ -34,9 +35,10 @@ export default class CreateProperty extends React.Component {
     createNewContractUsingFactory = async () => {
         const { drizzle, drizzleState } = this.props;
         const contract = drizzle.contracts.PropertyFactory;
-        let propertiesLengthBefore = this.props.drizzleState.contracts.PropertyFactory.getProperties[this.state.getPropertiesKey].value.length
+
         let price = drizzle.web3.utils.toWei('10', 'ether')
         let tx = await contract.methods.createProperty('add', 'desc', price, 10 ).send({from : this.state.activeAccount, gasLimit: 3000000})
+
         let properties = drizzleState.contracts.PropertyFactory.getProperties[this.state.getPropertiesKey].value
         if(tx.status){
             if(tx.events.NewPropertyAdded){
