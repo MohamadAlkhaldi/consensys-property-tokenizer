@@ -82,7 +82,7 @@ export default class CreateProperty extends React.Component {
         return (
             <div>
                 <br/>
-                <Card width={"auto"} maxWidth={"80%"} mx={"auto"} bg={''}>
+                <Card width={"auto"} maxWidth={"80%"} mx={"auto"} bg={"#F0F0F0"} >
                     {/* {
                         storedData ?
                         <ul>
