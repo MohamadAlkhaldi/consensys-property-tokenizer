@@ -36,38 +36,15 @@ export default class CreateProperty extends React.Component {
         const contract = drizzle.contracts.PropertyFactory;
         let propertiesLengthBefore = this.props.drizzleState.contracts.PropertyFactory.getProperties[this.state.getPropertiesKey].value.length
         let price = drizzle.web3.utils.toWei('10', 'ether')
-        const stackId = await contract.methods["createProperty"].cacheSend('add', 'desc', price, 10, {from : this.state.activeAccount, gasLimit: 3000000})
-        this.setState({ stackId, newContractAddedToDrizzle: false });
-    }
-
-    getTxStatus = () => {
-        // get the transaction states from the drizzle state
-        const { transactions, transactionStack } = this.props.drizzleState;
-
-        // get the transaction hash using our saved `stackId`
-        const txHash = transactionStack[this.state.stackId];
-
-        // if transaction hash does not exist, don't display anything
-        if (!txHash) return null;
-
-        /*here we are listening for added contracts, when check the following:
-        createNewContractUsingFactory is called state.newContractAddedToDrizzle becomes false which means new contract added but not yet added to drizzle.
-        contract in not added untill tx status is 'success'
-        then we wait untill getproperties is updated
-        then we call addNewContractToDrizzle to do just what the name impiles
-        after addNewContractToDrizzle excution state.newContractAddedToDrizzle will go false again waiting for a new contract to be added
-        */ 
-        if((transactions[txHash] && transactions[txHash].status == 'success') && !this.state.newContractAddedToDrizzle){
-            let properties = this.props.drizzleState.contracts.PropertyFactory.getProperties[this.state.getPropertiesKey].value
-            if(properties[properties.length-1]){
-                let newPropertyAddress = properties[properties.length-1]
-                this.addNewContractToDrizzle(newPropertyAddress, properties.length -1)
+        let tx = await contract.methods.createProperty('add', 'desc', price, 10 ).send({from : this.state.activeAccount, gasLimit: 3000000})
+        let properties = drizzleState.contracts.PropertyFactory.getProperties[this.state.getPropertiesKey].value
+        if(tx.status){
+            if(tx.events.NewPropertyAdded){
+                let newPropertyAddress = tx.events.NewPropertyAdded.returnValues.property
+                this.addNewContractToDrizzle(newPropertyAddress, properties.length)
             }
         }
-
-        // return the transaction status
-        return `Transaction status: ${transactions[txHash] && transactions[txHash].status}`;
-    };
+    }
 
     addNewContractToDrizzle = (contractAddress, index) => {
         let contractName = `Property ${index}`
@@ -95,8 +72,7 @@ export default class CreateProperty extends React.Component {
         return (
             <div>
                 <br/>
-                <Card width={"auto"} maxWidth={"80%"} mx={"auto"} >
-                    <div>{this.getTxStatus()}</div>
+                <Card width={"auto"} maxWidth={"80%"} mx={"auto"}>
                     <button onClick={() => this.createNewContractUsingFactory()}>Add property</button>
 
                     <button onClick={() => this.getPropertiesFromState()}>Get property</button>
