@@ -84,6 +84,8 @@ render() {
     } = this.state
 
     const contract = drizzleState.contracts[this.props.propertyContractName]
+
+    let propertyContractAddress = drizzle.contracts[this.props.propertyContractName].address
     let owner = contract && contract.owner[ownerKey]
     let holders = contract && contract.getHolders[holdersKey]
     let propertyRevenue = contract && contract.propertyRevenue[propertyRevenueKey]
@@ -109,7 +111,9 @@ render() {
                             <Text>
                                 Shares: { supply ? supply.value + ` for ${propertyInfo ? drizzle.web3.utils.fromWei(`${(propertyInfo.value.price) / supply.value}`, 'ether') : null} ETH each` : null }
                             </Text>
-                                <Text>Property undistributed revenue: { propertyRevenue ? `${drizzle.web3.utils.fromWei(propertyRevenue.value, 'ether')} ETH` : null }</Text>
+                            <Text>Property undistributed revenue: { propertyRevenue ? `${drizzle.web3.utils.fromWei(propertyRevenue.value, 'ether')} ETH` : null }</Text>
+                            {console.log(propertyContractAddress)}
+                            <Text>Property contract address: {propertyContractAddress}</Text>
                         </Box>
                         <Box width={1/4}></Box>
                         <Box width={1/4}>
