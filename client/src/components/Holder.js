@@ -12,9 +12,8 @@ export default class Holder extends React.Component {
         this.state = { stackId: null, 
             holderSharesBalanceKey: null,
             holderSellingKey: null, 
-            holdersRevenueKey: null, 
-            contractOwner: null, 
-            firstKey: null}
+            holdersRevenueKey: null,
+            firstKey: '0x0'}
         this.handleToggleForSale = this.handleToggleForSale.bind(this)
         this.handleBuyButton = this.handleBuyButton.bind(this)
         this.handleWithdrawRevenue = this.handleWithdrawRevenue.bind(this)
@@ -26,9 +25,8 @@ export default class Holder extends React.Component {
         const contract = drizzle.contracts[propertyContractName]
 
         //Getting previously cached property's contract's owner without callling contract
-        const ownerCachedObject = drizzleState.contracts[propertyContractName].owner
-        let firstKey = Object.keys( ownerCachedObject )[0];
-        const contractOwner = ownerCachedObject[firstKey].value
+        // const ownerCachedObject = drizzleState.contracts[propertyContractName].owner
+        // let firstKey = Object.keys( ownerCachedObject )[0];
 
         const holderSharesBalanceKey = contract.methods['balanceOf'].cacheCall(holderAddress)
         const holderSellingKey = contract.methods['holdersSelling'].cacheCall(holderAddress)
@@ -37,9 +35,8 @@ export default class Holder extends React.Component {
         this.setState({
             holderSharesBalanceKey,
             holderSellingKey, 
-            holdersRevenueKey, 
-            contractOwner,
-            firstKey
+            holdersRevenueKey,
+            // firstKey
         })
     }
 
@@ -91,7 +88,8 @@ export default class Holder extends React.Component {
     render() {
         const {drizzleState, drizzle, propertyContractName, activeAccount} = this.props
         const contract = drizzleState.contracts[propertyContractName]
-        const { contractOwner } = this.state
+        const ownerCachedObject = contract.owner
+        const contractOwner = ownerCachedObject[this.firstKey]
         let holderAddress = this.props.holderAddress
         let holderSharesBalance = contract.balanceOf[this.state.holderSharesBalanceKey]
         let holderSelling = contract.holdersSelling[this.state.holderSellingKey]
@@ -103,7 +101,7 @@ export default class Holder extends React.Component {
                     <tr>
                         <td >
                             {`${holderAddress.substring(0, 5)}...${holderAddress.substring(38, 42)}`}
-                            {contractOwner == holderAddress ? ' owner' : null}
+                            {(contractOwner && contractOwner.value) == holderAddress ? ' owner' : null}
                         </td>
                         <td>{holderSharesBalance ? holderSharesBalance.value : null}</td>
                         <td>{holdersRevenue ? `${drizzle.web3.utils.fromWei(holdersRevenue.value, 'ether')} ETH` : null}</td>
@@ -112,13 +110,13 @@ export default class Holder extends React.Component {
                             {
                                 // Condition: The active account is holder?
                                 holderAddress.toLowerCase() == activeAccount ?
-                                <Button.Outline onClick={this.handleToggleForSale} size="small" mr={3} icon="Edit" icononly />
+                                <Button.Outline onClick={this.handleToggleForSale} size="small">Change</Button.Outline>
                                 : null
                             }
                         </td>
                         <td>
                             <Button.Outline onClick={this.handleWithdrawRevenue} size="small" mr={3}
-                            // Condition: The active account is holder? and holder renenue is not 0? don't disable, otherwise do
+                            // Condition: The active account is holder? and holder revenue is not 0? don't disable, otherwise do
                             disabled={holderAddress.toLowerCase() == activeAccount && ((holdersRevenue && holdersRevenue.value) > 0) ? false : true}
                             >
                                 Withdraw Revenue

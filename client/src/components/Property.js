@@ -107,7 +107,7 @@ render() {
                                 : null 
                             }
                             <Text>
-                                Shares: { supply ? supply.value + ` for ${drizzle.web3.utils.fromWei(`${(propertyInfo && propertyInfo.value.price) / supply.value}`, 'ether')} ETH each` : null }
+                                Shares: { supply ? supply.value + ` for ${propertyInfo ? drizzle.web3.utils.fromWei(`${(propertyInfo.value.price) / supply.value}`, 'ether') : null} ETH each` : null }
                             </Text>
                                 <Text>Property undistributed revenue: { propertyRevenue ? `${drizzle.web3.utils.fromWei(propertyRevenue.value, 'ether')} ETH` : null }</Text>
                         </Box>
