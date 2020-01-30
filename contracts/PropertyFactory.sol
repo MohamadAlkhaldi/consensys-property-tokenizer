@@ -9,7 +9,6 @@ contract PropertyFactory {
 
     function createProperty(string memory _address, string memory _description, uint _price, uint _supply)
         public
-        returns (Property)
     {
         Property newProperty = new Property(properties.length, _address, _description, _price, _supply, msg.sender);
         properties.push(address(newProperty));
@@ -19,11 +18,5 @@ contract PropertyFactory {
     function getProperties() public view returns(address[] memory){
         return properties;
     }
-    
-    // function getPropertyByOwner(address _owner) public view returns(address){
-        // function getPropertyByOwner() public view returns(address){
-        // return ownerToProperty[_owner];
-        // return testValue;
-    // }
 
 }
