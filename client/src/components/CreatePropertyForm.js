@@ -90,7 +90,7 @@ export default class CreatePropertyForm extends React.Component {
                     </Field>
                     </Box>
                     <Box width={[1, 1, 1/2]} px={3}>
-                    <Field label="Total Price" validated={this.state.validated} width={1}>
+                    <Field label="Total Price in ETH" validated={this.state.validated} width={1}>
                         <Input
                         type="number"
                         required
