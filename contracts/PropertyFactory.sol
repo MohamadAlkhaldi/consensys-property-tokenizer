@@ -24,7 +24,7 @@ contract PropertyFactory {
     }
 
     ///@notice Allows to get the properties list
-    ///@dev Returns an array of all added properties
+    ///@return Returns an array of all added properties
     function getProperties() public view returns(address[] memory){
         return properties;
     }

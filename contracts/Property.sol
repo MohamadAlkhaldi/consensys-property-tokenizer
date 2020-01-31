@@ -64,6 +64,7 @@ contract Property is ERC20, Ownable {
     }
 
     ///@notice Returns the list of holders
+    ///@return holders array
     function getHolders() public view returns(address[] memory) {
         return holders;
     }
