@@ -61,3 +61,8 @@ At: https://ipfs.io/ipfs/QmWv3C87yciLwmVkZWhLgRrGAvHwauFuU9PNer1aYdGPHB/
 **Ropsten** Contract is also deployed on Ropsten testnet, you can play with it using Remix IDE. Check the deployment address at deployed_addresses.txt
 
 > Final note: All requirements are met, plus one stretch requirement (Hosting the app on IPFS), please feel free to reach out when needed.
+
+## Honorable Mentions
+**Drizzle** I've got introduced to Truffle suit's Drizzle working on this project, and to be honest the first two days were not very smooth, but later on and looking back to previous projects where I used only React and web3js to interact with my smart contracts, it's saved ton of time and a lot of lines of code, will writ more about this experience.
+
+More mentions to be added to this list.
