@@ -1,2 +1,5 @@
 Rinkeby: 0xf8B1B407CF2aBAEE05f91127e046CA6960845787
 Ropsten: 0x9ad9f4a08795836bb6f275e82fc7b4f6001ba35d
+
+Note: these addresses are for the PropertyFactory contract, 
+children contracts addresses are displayed on the app UI

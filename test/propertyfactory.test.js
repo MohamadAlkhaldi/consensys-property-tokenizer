@@ -1,6 +1,5 @@
 const PropertyFactory = artifacts.require("PropertyFactory");
 const Property = artifacts.require("Property");
-// const truffleAssert = require('truffle-assertions');
 
 contract("PropertyFactory", accounts => {
 

@@ -1,10 +1,5 @@
 import React from "react";
-import { Button, Flex, Text, Box, disabled  } from 'rimble-ui';
-// import Property from "../contracts/Property.json";
-// import { newContextComponents } from "@drizzle/react-components";
-// import { drizzleReducers } from "@drizzle/store";
-// import Property from './Property'
-// const { AccountData, ContractData, ContractForm } = newContextComponents;
+import { Button } from 'rimble-ui';
 
 export default class Holder extends React.Component {
     constructor (props){

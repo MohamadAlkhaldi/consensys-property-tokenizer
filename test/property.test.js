@@ -1,7 +1,6 @@
 const PropertyFactory = artifacts.require("PropertyFactory");
 const Property = artifacts.require("Property");
 let catchRevert = require("./exceptionsHelpers.js").catchRevert
-// const truffleAssert = require('truffle-assertions');
 
 contract("Property", accounts => {
 

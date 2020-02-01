@@ -1,12 +1,7 @@
 import React from "react";
 import Property from "../contracts/Property.json";
-// import DisplayValue from "./DisplayValue";
-import { newContextComponents } from "@drizzle/react-components";
-import { drizzleReducers } from "@drizzle/store";
-import PropertiesList from './PropertiesList'
 import { Card, Heading, Text } from 'rimble-ui';
 import CreatePropertyForm from './CreatePropertyForm'
-const { AccountData, ContractData, ContractForm } = newContextComponents;
 
 export default class CreateProperty extends React.Component {
     constructor(props){
