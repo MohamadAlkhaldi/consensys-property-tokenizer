@@ -25,7 +25,7 @@ To setup this project in a local environment you need to have:
 - git
 - Metamask extension
 
-> Please note while you proceed tha Client is no longer hosted on IPFS
+> Please note while you proceed that the client is no longer hosted on IPFS
 
 To play with this project you have two networks and two front-end servers to choose from, which leaves with four scenarios:
 -	Local development network with front-end served by a local server
